@@ -1,0 +1,30 @@
+import cv2
+import numpy as np
+import picamera
+import io
+
+stream = io.BytesIO()
+
+CAMERA_WIDTH = 320
+CAMERA_HEIGHT = 240
+
+print ("2")
+x = 1
+print ("3")
+cam = cv2.VideoCapture(0)
+while(cam.isOpened) and x <255:
+    print ("Camera is open")
+    x = x+2
+    f,img=cam.read()
+    ##if f==True:
+    print ("Camera is active")
+    ##time.sleep(0.04)
+    img=cv2.medianBlur(img,x)
+    cv2.imshow('track',img)
+    print x
+    if(cv2.waitKey(27)!=-1):
+      cam.release()
+      cv2.destroyAllWindows()
+      #break 
+while x >= 255:
+   x = 0
