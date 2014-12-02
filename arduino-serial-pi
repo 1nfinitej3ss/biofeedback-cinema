@@ -1,0 +1,47 @@
+#include <Servo.h>
+
+Servo servo1;
+Servo servo2; 
+
+
+void setup() {
+
+  Serial.begin(9600);
+  Serial.println("Ready");
+
+}
+
+void loop() {
+
+  if ( Serial.available()) {
+    char ch = Serial.read();
+
+    switch(ch) {
+      case 'a':
+        servo1.attach(8); //analog pin 0
+        servo1.write(180);
+        delay(1000);
+        servo1.detach();
+        break;
+      case 'b':
+        servo2.attach(8); //analog pin 0
+        servo2.write(0);
+        delay(1000);
+        servo2.detach();
+        break;
+      case 'c':
+        servo1.attach(9); //analog pin 0
+        servo1.write(180);
+        delay(1000);
+        servo1.detach();
+        break;
+      case 'd':
+        servo2.attach(9); //analog pin 0
+        servo2.write(0);
+        delay(1000);
+        servo2.detach();
+        break;        
+    }
+  }
+
+} 
