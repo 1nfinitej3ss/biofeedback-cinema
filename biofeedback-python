@@ -8,9 +8,9 @@ from MindwaveDataPointReader import MindwaveDataPointReader
 mindwaveDataPointReader = MindwaveDataPointReader()
 mindwaveDataPointReader.start()
 
-#DEVICE = '/dev/ttyACM0'
-#BAUD = 9600
-#ser = serial.Serial(DEVICE, BAUD)
+DEVICE = '/dev/ttyACM0'
+BAUD = 9600
+ser = serial.Serial(DEVICE, BAUD)
 
 stream = io.BytesIO()
 
@@ -31,7 +31,7 @@ while(True):
         Attention = Attention.strip('Attention Level: ')
         Attention = int(100-((round(int(Attention)/2)*2)+1))
         print Attention
-        #ser.write(str(Attention))
+        ser.write(str(Attention))
         ret, frame = cap.read()
         frame=cv2.medianBlur(frame,Attention)
         frame = cv2.resize(frame,(640,480))
