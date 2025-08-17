@@ -65,6 +65,128 @@ A test script for experimenting with OpenCV blur effects:
 4. **Camera Control**: Arduino receives commands to move servos for camera positioning
 5. **Real-time Feedback**: Live video display shows the brainwave-controlled effects
 
+## Complete Build Instructions
+
+**📖 Full step-by-step instructions available at: [Biofeedback Cinema Instructables](https://www.instructables.com/Biofeedback-Cinema/)**
+
+### Required Supplies
+
+1. **Neurosky Mindwave Mobile EEG Headset**
+2. **Raspberry Pi B+** (B+ recommended for more USB ports, but B Model works with USB hub)
+   - Raspberry Pi Power Adapter or Battery Pack
+   - Wifi Dongle or Ethernet Connection (setup only)
+   - Bluetooth Dongle (see [Raspberry Pi wiki](https://www.raspberrypi.org/documentation/configuration/bluetooth.md) for compatible dongles)
+   - SD Card (at least 8GB) with NOOBS
+3. **Arduino** (any board, Uno used in this project)
+   - Arduino Power Adapter or Battery Pack
+   - A-B USB Cable
+4. **USB Webcam**
+5. **Mini Pan-Tilt Kit**
+6. **Monitor with HDMI Input** (or use VNC for remote control)
+   - HDMI Cable
+7. **USB Keyboard & Mouse** (bluetooth recommended to minimize USB ports)
+
+### Step-by-Step Setup
+
+#### Step 1: Setup Raspberry Pi
+1. **Hardware Setup**: Connect keyboard, mouse, bluetooth dongle, wifi dongle, webcam, monitor via HDMI, and power
+2. **OS Installation**: Install Raspbian OS via NOOBS
+3. **Troubleshooting**: 
+   - Fix aspect ratio issues by rebooting or manual configuration
+   - Update keyboard configuration if special characters are mismapped
+   - Test internet connection for library installation
+
+#### Step 2: Connect Neurosky Headset
+1. **Bluetooth Configuration**:
+   ```bash
+   sudo apt-get update
+   sudo apt-get install bluetooth
+   sudo apt-get install -y bluetooth bluez-utils blueman
+   sudo reboot
+   ```
+
+2. **Test Bluetooth Connection**:
+   ```bash
+   hcitool scan
+   ```
+   Note the MAC address of your Mindwave headset
+
+3. **Install Neurosky Libraries**:
+   ```bash
+   sudo apt-get install git-core
+   sudo git clone https://github.com/cttoronto/python-mindwave-mobile
+   sudo nano /home/pi/python-mindwave-mobile/MindwaveMobileRawReader.py
+   ```
+   Update the MAC address in the file
+
+4. **Pair and Trust Device**:
+   ```bash
+   sudo bluez-simple-agent hci0 XX:XX:XX:XX:XX:XX
+   sudo bluez-test-device trusted XX:XX:XX:XX:XX:XX yes
+   sudo apt-get install python-bluez
+   ```
+
+5. **Test Connection**:
+   ```bash
+   sudo python /home/pi/python-mindwave-mobile/read_mindwave_mobile.py
+   ```
+
+#### Step 3: Connect USB Webcam with OpenCV
+1. **Install OpenCV**:
+   ```bash
+   sudo apt-get install libopencv-dev python-opencv
+   sudo apt-get -f install
+   sudo apt-get install libopencv-dev python-opencv
+   ```
+
+2. **Test Installation**:
+   ```bash
+   python
+   >>> import cv2
+   ```
+
+3. **Test Webcam**: Use the `cv-blur-test` script to verify camera and OpenCV functionality
+
+#### Step 4: Connect Arduino
+1. **Install Arduino IDE**:
+   ```bash
+   sudo apt-get install arduino
+   ```
+
+2. **Load Sketch**: Copy the `arduino-serial-pi` sketch into Arduino IDE and upload to your board
+
+3. **Note Serial Port**: Record the Arduino port (usually `/dev/ttyACM0`)
+
+4. **Disable Serial Console** (for smooth USB serial connection):
+   ```bash
+   wget https://github.com/wyolum/alamode/blob/master/bundles/alamode-setup.tar.gz?raw=true -O alamode-setup.tar.gz
+   tar -xvzf alamode-setup.tar.gz
+   cd alamode-setup
+   sudo ./setup
+   sudo reboot
+   ```
+
+#### Step 5: Final Integration
+1. **Set Permissions**:
+   ```bash
+   chmod a=rwx /home/pi/python-mindwave-mobile
+   ```
+
+2. **Run Main Script**: Execute the `biofeedback-python` script from the python-mindwave-mobile folder
+
+3. **Expected Results**:
+   - Attention level displayed in Python Shell
+   - Live webcam feed with dynamic blur based on attention
+   - Servo motors moving based on brainwave data
+
+### System Configuration
+
+The Biofeedback Cinema system translates the participant's level of focus/attention (single integer) to:
+- **Camera Position**: Pan and tilt via servo motors
+- **Camera Focus**: Internal focus via OpenCV blur effects
+
+All processing happens through a bluetooth connection between the Neurosky EEG headset and Raspberry Pi, with the Arduino handling motor control based on signals from the Pi.
+
 ## Technical Requirements
 
 ### Hardware
@@ -81,34 +203,6 @@ A test script for experimenting with OpenCV blur effects:
 - PySerial
 - Bluetooth libraries for Mindwave communication
 - MindwaveDataPointReader (custom library)
-
-## Installation & Setup
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/yourusername/biofeedback-cinema.git
-   cd biofeedback-cinema
-   ```
-
-2. **Install Python dependencies:**
-   ```bash
-   pip install opencv-python pyserial
-   ```
-
-3. **Connect hardware:**
-   - Connect Neurosky Mindwave headset via Bluetooth
-   - Connect Arduino via USB
-   - Connect servos to Arduino pins 8 and 9
-   - Connect camera to Raspberry Pi
-
-4. **Upload Arduino code:**
-   - Open `arduino-serial-pi` in Arduino IDE
-   - Upload to your Arduino board
-
-5. **Run the main script:**
-   ```bash
-   python biofeedback-python
-   ```
 
 ## Usage
 
@@ -133,6 +227,8 @@ This project explores:
 - Advanced video effects and filters
 - Machine learning for pattern recognition
 - Multi-user collaborative experiences
+- Additional brainwave parameters (eye blinks, etc.)
+- Extended camera functions (hue, saturation, brightness, etc.)
 
 ## Contributing
 
@@ -152,6 +248,7 @@ This is an experimental art project. Contributions are welcome, especially:
 - **MediaLab-Prado** for hosting the initial development workshop
 - **The Laboratory Residency** for continued development support
 - **Gregory Hough** and **Salud Lopez** for collaboration on the original prototype
+- **Pedro Peira** for additional workshop collaboration
 
 ## Contact
 
@@ -160,3 +257,5 @@ For questions about this project or collaboration opportunities, please reach ou
 ---
 
 *This project represents ongoing research into the intersection of neuroscience, technology, and artistic expression. It explores how our neural states can become a new form of creative medium.*
+
+**🔗 Complete build guide: [Biofeedback Cinema Instructables](https://www.instructables.com/Biofeedback-Cinema/)**
